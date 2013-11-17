@@ -3,6 +3,9 @@
 
 #include <cmath>
 #include "vec.h"
+#include <FL/gl.h>
+#include <GL/glu.h>
+#include "FL/glut.h"
 #include "properties.h"
 
 /** Forward-declare ICamera because it's used in Model yet is a Model. */
@@ -106,6 +109,23 @@ public:
 				float sr = 1, float sg = 1, float sb = 1);
 
 	void draw();
+};
+
+class Worm : public Model {
+//Make sure protected: comes before properties, unless you want to be able to access them from other classes (in that case, use public:).
+protected:
+//Add the property here:
+  RangeProperty lengthProp;
+  RangeProperty headAngleProp;
+  RangeProperty tailAngleProp;
+  RangeProperty antennaAngleProp;
+  RangeProperty headScaleProp;
+  RangeProperty tailScaleProp;
+  RangeProperty bodyAngleProp;
+  RangeProperty bodySegmentProp;
+public:
+  Worm();
+  void draw();
 };
 
 #endif // MODEL_H

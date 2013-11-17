@@ -164,3 +164,87 @@ DirectionalLight::DirectionalLight(const char* name, GLuint lightNumber,
 void DirectionalLight::draw() {
 	Light::draw(true);
 }
+
+Worm::Worm() :
+	Model("Worm"),
+	lengthProp("Height", 0.0f, 10.0f, 5.0f, 0.5f),
+	headAngleProp("Head Angle", 0.0f, 90.0f, 30.0f, 1.0f),
+	bodyAngleProp("BodyAngle", 0.0f, 90.0f, 30.0f, 1.0f),
+	tailAngleProp("Tail Angle", 30.0f, 180.0f, 60.0f, 1.0f),
+	antennaAngleProp("Antenna Angle", 0.0f, 90.0f, 30.0f, 1.0f),
+	headScaleProp("Head Scale", 0.1f, 0.5f, 0.3f, 0.01f),
+	tailScaleProp("Tail Scale", 0.1f, 0.5f, 0.2f, 0.01f),
+	bodySegmentProp("Body Segment", 1, 5, 3, 1)
+{
+	properties.add(&lengthProp);
+	properties.add(&headAngleProp);
+	properties.add(&tailAngleProp);
+	properties.add(&antennaAngleProp);
+	properties.add(&headScaleProp);
+	properties.add(&tailScaleProp);
+	properties.add(&bodyAngleProp);
+	properties.add(&bodySegmentProp);
+}
+
+void Worm::draw() {
+	int division = 64;
+	float PI = 3.1416;
+	float length = lengthProp.getValue();
+	float headScale = headScaleProp.getValue();
+	float tailScale = tailScaleProp.getValue();
+	float headsize = length * headScale;
+	float antennaHeight = headsize / 2;
+	float antennaWidth = headsize / 10;
+	float bodySize = length * (1 - headScale - tailScale);
+	float tailSize = length * tailScale;
+	float headAngle = headAngleProp.getValue();
+	float tailAngle = tailAngleProp.getValue();
+	float antennaAngle = antennaAngleProp.getValue();
+	float bodyAngle = bodyAngleProp.getValue();
+	int bodySegment = bodySegmentProp.getValue();
+
+	glPushMatrix();	
+		// body
+		float bodyStep = bodySize / bodySegment;
+		glRotatef(bodyAngle, 0, 0, 1);
+		glPushMatrix();
+			glTranslatef(0, bodySize / 2 + bodyStep / 2, 0);
+			for (int i = 0; i < bodySegment; i++)
+			{
+				glTranslatef(0, -bodyStep, 0);
+				glutSolidSphere(bodyStep / 2, division, division);
+			}
+		glPopMatrix();
+		glPushMatrix();
+			// tail
+			glTranslatef(0, -bodySize / 2 + bodyStep / 2, 0);
+
+			glTranslatef((tailSize + bodyStep) / 2 * sin(tailAngle / 180 * PI), (tailSize + bodyStep) / 2 * cos(tailAngle / 180 * PI), 0);
+			glutSolidSphere(tailSize / 2, division, division);
+		glPopMatrix();
+		glPushMatrix();
+			// head
+			glTranslatef(0, bodySize / 2 - bodyStep / 2, 0);
+
+			glTranslatef(-(headsize + bodyStep) / 2 * sin(headAngle / 180 * PI), (headsize + bodyStep) / 2 * cos(headAngle / 180 * PI), 0);
+			glutSolidSphere(headsize / 2, division, division);
+			glPushMatrix();
+				// antenna
+				glPushMatrix();
+					// antenna 1
+					glRotatef(-antennaAngle, 0, 0, 1);
+					glTranslatef(0, headsize / 2, 0);
+					glRotatef(-90, 1, 0, 0);
+					drawCylinder(antennaHeight, antennaWidth, antennaWidth);
+				glPopMatrix();
+				glPushMatrix();
+					// antenna 2
+					glRotatef(antennaAngle, 0, 0, 1);
+					glTranslatef(0, headsize / 2, 0);
+					glRotatef(-90, 1, 0, 0);
+					drawCylinder(antennaHeight, antennaWidth, antennaWidth);
+				glPopMatrix();
+			glPopMatrix(); 
+		glPopMatrix();
+	glPopMatrix();
+}

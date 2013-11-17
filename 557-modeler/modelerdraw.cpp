@@ -497,9 +497,6 @@ int write_revolution_rayfile(FILE* rayfile, int num_vertices, int num_triangles,
 	return 0;
 }
 
-void drawMyObject(double scale){
-}
-
 void drawRevolution(double scale)
 {
 	boolean useDefault=false;

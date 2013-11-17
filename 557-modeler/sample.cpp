@@ -47,6 +47,8 @@ protected:
 	PointLight pointLight;
 	DirectionalLight directionalLight;
 
+	Worm worm;
+
 
 public:
 
@@ -80,7 +82,8 @@ public:
 		// you can add their property groups, and they will appear in the list
 		// in the top left corner of Modeler, under this model's entry:
 		properties.add(pointLight.getProperties())
-				  .add(directionalLight.getProperties());
+				  .add(directionalLight.getProperties())
+				  .add(worm.getProperties());
 
 		// Finally, add all the properties to this model's PropertyGroup.
 		properties.add(&useTexture)
@@ -170,7 +173,7 @@ public:
 				drawRevolution(1);
 				break;
 			case 7: // my own
-				drawMyObject(1);
+				worm.draw();
 				break;
 			}
 			
