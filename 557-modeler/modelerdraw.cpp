@@ -7,8 +7,12 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
-// Helper functions from the red book so we can print text on the
-// screen.
+#include "vec.h"
+Vec3<double> cp(Vec3d x, Vec3d y)
+{
+	Vec3<double> vector = Vec3d((x[1]*y[2])-(y[1]*x[2]),-(x[0]*y[2])+(y[0]*x[2]),(x[0]*y[1])-(x[1]*y[0]));   
+	return vector;
+}
 GLubyte space[] =
 {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
 GLubyte letters[][13] = {
@@ -502,259 +506,93 @@ void drawMyObject(double scale){
 
 void drawRevolution(double scale)
 {
-	boolean useDefault=false;
-	if(useDefault){
-		if ( revolution_pts.empty() ) {
-			return;
-		}
-		ModelerDrawState *mds = ModelerDrawState::Instance();
 
-		_setupOpenGl();
-		if (mds->m_rayFile)
-		{
-			// write into rayfile
-		} else    
-		{
-			int divisions; 
-			switch(mds->m_quality)
-			{
-			case HIGH: 
-				divisions = 128; break;
-			case MEDIUM: 
-				divisions = 32; break;
-			case LOW:
-				divisions = 16; break;
-			case POOR:
-				divisions = 8; break;
-			}
-
-			const float PI = 3.141592653589793238462643383279502f;
-
-			float origin_y = 1.13132490911795f;
-			float origin_z = -3.0f;
-
-			int num_pts = revolution_pts.size();
-			for ( int i=0; i<6; ++ i ) {
-				// This implementation uses glBegin(GL_TRIANGLES)/glend() and has trivial normals and texture coordinates.
-				// It is OK to start from the code below for developing and testing,
-				// but please use glDrawElements() with GL_TRIANGES to draw the surface in the final code.
-				// It is a naive version of surface of revolution created by translating a curve along a straight line.
-				// You need to rotate the curve to create a more interesting shape. Also, please create your own curve with the curve editor tool. Good luck!						
-				for ( int j=1; j < num_pts; ++ j ) {				
-
-					float p1_x = (float)(revolution_pts[j-1].x * scale);
-					float p1_y = (float)(revolution_pts[j-1].y * scale + origin_y);
-					float p1_z = i+origin_z;
-
-					float p2_x = (float)(revolution_pts[j].x * scale);
-					float p2_y = (float)(revolution_pts[j].y * scale + origin_y);
-					float p2_z = p1_z;
-
-					float p3_x = p1_x;
-					float p3_y = p1_y;
-					float p3_z = p1_z+1;
-
-					float p4_x = p2_x;
-					float p4_y = p2_y;
-					float p4_z = p3_z;
-
-					// You must compute the normal directions add texture coordinates, see lecture notes
-					float n1_x = 1;
-					float n1_y = 0;
-					float n1_z = 0;
-					float texture_u = 1.0f;
-					float texture_v = 1.0f;
-
-					glBegin(GL_TRIANGLES);
-					glNormal3f(n1_x,n1_y,n1_z);
-					glTexCoord2f( texture_u, texture_v);
-					glVertex3f(p1_x, p1_y, p1_z);
-
-					glNormal3f(n1_x,n1_y,n1_z);
-					glTexCoord2f( texture_u, texture_v);
-					glVertex3f(p2_x, p2_y, p2_z);
-
-					glNormal3f(n1_x,n1_y,n1_z);
-					glTexCoord2f( texture_u, texture_v);
-					glVertex3f(p3_x, p3_y, p3_z);
-					glEnd();
-
-					glBegin(GL_TRIANGLES);
-					glNormal3f(n1_x,n1_y,n1_z);
-					glTexCoord2f( texture_u, texture_v);
-					glVertex3f(p3_x, p3_y, p3_z);					
-
-					glNormal3f(n1_x,n1_y,n1_z);
-					glTexCoord2f( texture_u, texture_v);
-					glVertex3f(p2_x, p2_y, p2_z);
-
-					glNormal3f(n1_x,n1_y,n1_z);
-					glTexCoord2f( texture_u, texture_v);
-					glVertex3f(p4_x, p4_y, p4_z);
-					glEnd();
-				}			
-			}
-		}
+	if ( revolution_pts.empty() ) {
+		return;
 	}
-	// new implementation
-	else{
-		if ( revolution_pts.empty() ) {
-			return;
+	ModelerDrawState *mds = ModelerDrawState::Instance();
+	_setupOpenGl();
+	if (mds->m_rayFile)
+	{
+		// write into rayfile
+	} else    
+	{
+		int divisions; 
+		switch(mds->m_quality)
+		{
+		case HIGH: 
+			divisions = 128; break;
+		case MEDIUM: 
+			divisions = 32; break;
+		case LOW:
+			divisions = 16; break;
+		case POOR:
+			divisions = 8; break;
 		}
-		ModelerDrawState *mds = ModelerDrawState::Instance();
-		_setupOpenGl();
-		if (mds->m_rayFile)
-		{
-			// write into rayfile
-		} else    
-		{
-			int divisions; 
-			switch(mds->m_quality)
-			{
-			case HIGH: 
-				divisions = 128; break;
-			case MEDIUM: 
-				divisions = 32; break;
-			case LOW:
-				divisions = 16; break;
-			case POOR:
-				divisions = 8; break;
-			}
-			const float PI = 3.141592653589793238462643383279502f;
-			float origin_y = 1.13132490911795f;
-			float origin_z = -3.0f;
-			int num_pts = revolution_pts.size();
-			float maxY = 0.0;
-			float minY= 0.0;
-			for(int rp=0; rp <revolution_pts.size(); rp++){
-				if(revolution_pts[rp].y<=minY)
-					minY=revolution_pts[rp].y;
-				if(revolution_pts[rp].y>=maxY)
-					maxY=revolution_pts[rp].y;
-			}
-			float rangeY=maxY-minY;
-			float offsetY= (minY<0?-minY:0);
+		const float PI = 3.141592653589793238462643383279502f;
+		float origin_y = 1.13132490911795f;
+		float origin_z = -3.0f;
+		int num_pts = revolution_pts.size();
+		float maxY = 0.0;
+		float minY= 0.0;
+		for(int rp=0; rp <revolution_pts.size(); rp++){
+			if(revolution_pts[rp].y<=minY)
+				minY=revolution_pts[rp].y;
+			if(revolution_pts[rp].y>=maxY)
+				maxY=revolution_pts[rp].y;
+		}
+		float rangeY=maxY-minY;
+		float offsetY= (minY<0?-minY:minY);
+		for ( int j = 1; j < num_pts; ++ j ) {
+			// for each point, make corresponding sets of points
+			for (int lgt = 0; lgt < divisions;lgt++){
+				float theta = 2*PI*lgt/divisions;
+				Vec3d curr = Vec3d(revolution_pts[j].x * cos(theta),revolution_pts[j].y+origin_y,
+					(revolution_pts[j].x * sin(theta))+origin_z);
+				Vec3d curr_low =  Vec3d(revolution_pts[j-1].x * cos(theta),revolution_pts[j-1].y+origin_y,
+					(revolution_pts[j-1].x * sin(theta))+origin_z);
+				int lgtNext = (lgt==divisions-1?0:lgt+1);
+				float thetaNext= 2*PI*lgtNext/divisions;
+				Vec3d curr_nxt= Vec3d(revolution_pts[j].x * cos(thetaNext), revolution_pts[j].y+origin_y,
+					(revolution_pts[j].x * sin(thetaNext))+origin_z);
+				Vec3d curr_low_nxt = Vec3d( revolution_pts[j-1].x * cos(thetaNext),
+					revolution_pts[j-1].y+origin_y, (revolution_pts[j-1].x * sin(thetaNext))+origin_z);
+				//compute normals
+				Vec3d curr_low_n = (cp(curr-curr_low,Vec3d(-1*sin(theta),0,cos(theta))));
+				Vec3d curr_n = (cp(curr-curr_low,Vec3d(-1*sin(theta),0,cos(theta))));
+				Vec3d curr_nxt_n = (cp(curr_nxt-curr_low_nxt,Vec3d(-1*sin(thetaNext),0,cos(thetaNext))));
+				Vec3d curr_low_nxt_n = (cp(curr_nxt-curr_low_nxt,Vec3d(-1*sin(thetaNext),0,cos(thetaNext))));
+				curr_n.normalize();
+				curr_low_n.normalize();
+				curr_nxt_n.normalize();
+				curr_low_nxt_n.normalize();
+				GLfloat vertices[12]={curr_low[0],curr_low[1], curr_low[2],
+					curr[0],curr[1],curr[2],
+					curr_low_nxt[0],curr_low_nxt[1],curr_low_nxt[2],
+					curr_nxt[0],curr_nxt[1],curr_nxt[2]};
 
-			for ( int i = 0; i < 6; ++ i ) {
-				for ( int j = 1; j < num_pts; ++ j ) {
-					// for each point, make corresponding sets of points
-					for (int lgt = 0; lgt < divisions;lgt++){
-						float x = revolution_pts[j].x * cos(2*PI*lgt/divisions);
-						float y = revolution_pts[j].y;
-						float z = revolution_pts[j].x * sin(2*PI*lgt/divisions);
-						float x_low = revolution_pts[j-1].x * cos(2*PI*lgt/divisions);
-						float y_low = revolution_pts[j-1].y;
-						float z_low = revolution_pts[j-1].x * sin(2*PI*lgt/divisions);
+				GLfloat normals[12] = {
+					curr_low[0], curr_low[1], curr_low[2],
+					curr[0],curr[1],curr[2],
+					curr_low_nxt[0],curr_low_nxt[1],curr_low_nxt[2],
+					curr_nxt[0],curr_nxt[1],curr_nxt[2]};
 
-						int lgtNext = (lgt==divisions-1?0:lgt+1);
-						float x_nxt = revolution_pts[j].x * cos(2*PI*lgtNext/divisions);
-						float y_nxt = revolution_pts[j].y;
-						float z_nxt = revolution_pts[j].x * sin(2*PI*lgtNext/divisions);
-						float x_low_nxt = revolution_pts[j-1].x * cos(2*PI*lgtNext/divisions);
-						float y_low_nxt = revolution_pts[j-1].y;
-						float z_low_nxt = revolution_pts[j-1].x * sin(2*PI*lgtNext/divisions);
-						
-						// figure-out normals
-						// T1 : xnext-x
-						// T2 : xlow-x
-						// N = T1*T2
-						float t1_x=(x-x_low);
-						float t1_y=(y-y_low);
-						float t1_z=(z-z_low);
-						float t2_x=-1*sin(2*PI*lgt/divisions);
-						float t2_y=0;
-						float t2_z=cos(2*PI*lgt/divisions);
-						float n_x=(t1_y * t2_z - t1_z * t2_y);
-						float n_y=(t1_z * t2_x - t1_x * t2_z);
-						float n_z=(t1_x * t2_y - t1_y * t2_x);
-						std::cout<<"------------------new start------------"<<std::endl;
-						
-						//std::cout <<"x "<< x <<" " << y << " " <<z <<std::endl;
-						//std::cout <<"x_low "<< x_low <<" " << y_low << " " <<z_low <<std::endl;
-						//std::cout <<"x_nxt "<< x_nxt <<" " << y_nxt << " " <<z_nxt <<std::endl;
-						//std::cout <<"x_low_nxt "<< x_low_nxt <<" " << y_low_nxt << " " <<z_low_nxt <<std::endl;
-						//std::cout <<"t1 "<< t1_x <<" " << t1_y << " " << t1_z <<std::endl;
-						//std::cout <<"t2 "<< t2_x <<" " << t2_y << " " <<t2_z <<std::endl;
-						
-						float norm0=sqrt(n_x*n_x+n_y*n_y+n_z*n_z);
-						//std::cout <<"n "<< n_x/norm0 << " " << n_y/norm0 << " " <<n_z/norm0<<std::endl;
-						
-						t2_x=-x_low+x;
-						t2_y=-y_low+y;
-						t2_z=-z_low+z;
-						t1_x=-1*sin(2*PI*lgt/divisions);
-						t1_y=0;
-						t1_z=cos(2*PI*lgt/divisions);
-						float n1_x=(t1_y * t2_z - t1_z * t2_y);
-						float n1_y=(t1_z * t2_x - t1_x * t2_z);
-						float n1_z=(t1_x * t2_y - t1_y * t2_x);
-						t1_x=x_nxt-x_low_nxt;
-						t1_y=y_nxt-y_low_nxt;
-						t1_z=z_nxt-z_low_nxt;
-						t2_x=sin(2*PI*lgtNext/divisions);
-						t2_y=0;
-						t2_z=-1*cos(2*PI*lgtNext/divisions);
-						float n2_x=(t1_y * t2_z - t1_z * t2_y);
-						float n2_y=(t1_z * t2_x - t1_x * t2_z);
-						float n2_z=(t1_x * t2_y - t1_y * t2_x);
-						t1_x=sin(2*PI*lgt/divisions);
-						t1_y=0;
-						t1_z=-1*cos(2*PI*lgt/divisions);
-						t2_x=x_low_nxt-x_nxt;
-						t2_y=y_low_nxt-y_nxt;
-						t2_z=z_low_nxt-z_nxt;
-						float n3_x=(t1_y * t2_z - t1_z * t2_y);
-						float n3_y=(t1_z * t2_x - t1_x * t2_z);
-						float n3_z=(t1_x * t2_y - t1_y * t2_x);
-						GLfloat vertices[12]={x_low,y_low+origin_y,z_low+origin_z,x,y+origin_y,z+origin_z,x_low_nxt,y_low_nxt+origin_y,z_low_nxt+origin_z,
-							x_nxt,y_nxt+origin_y,z_nxt+origin_z};
-						//float norm0=(n_x*n_x+n_y*n_y+n_z*n_z);
-						//std::cout << n_x/norm0 << " " << n_y/norm0 << " " <<n_z/norm0<<std::endl;
-						
-						float norm1=sqrt(n1_x*n1_x+n1_y*n1_y+n1_z*n1_z);
-						float norm2=sqrt(n2_x*n2_x+n2_y*n2_y+n2_z*n2_z);
-						float norm3=sqrt(n3_x*n3_x+n3_y*n3_y+n3_z*n3_z);
-						//std::cout << n_x/norm0 << " " << n_y/norm0 << " " <<n_z/norm0<<std::endl;
-						
-						GLfloat normals[12] = {//v0's normal
-							n_x/norm0,n_y/norm0,n_z/norm0,
-							n1_x/norm1,n1_y/norm1,n1_z/norm1,
-							n2_x/norm2,n2_y/norm2,n2_z/norm2,
-							n3_x/norm3,n3_y/norm3,n3_z/norm3};
-							
-							//0,1,0,
-							//-1*n_x/sqrt(n_x*n_x+n_y*n_y+n_z*n_z),-1*n_y/sqrt(n_x*n_x+n_y*n_y+n_z*n_z),-1*n_z/sqrt(n_x*n_x+n_y*n_y+n_z*n_z),
-							//v1's normal
-							//0,1,0,//n1_x,n1_y,n1_z,
-							//v2's normal
-							//0,1,0,
-							//n2_x,n2_y,n2_z,
-							//v3's normal
-							//0,1,0};
-							//n3_x,n3_y,n3_z};
-						// texture to be defined.
-						// theta = 2*PI*u
-						// v = which latitude it belongs to..
-						//wrong v  for now
-						GLfloat texture_uv[8]={//v0[u,v] v1[u,v], v2[u,v] v3[u,v]
-							((float)lgt)/divisions, (y_low+offsetY)/rangeY ,((float)lgt)/divisions, 
-							(y_low+offsetY)/rangeY,
-							((float)lgtNext)/divisions,  (y_low+offsetY)/rangeY,((float)lgtNext)/divisions, 
-							(y+offsetY)/rangeY};
-						GLuint indices[6]={1,0,2,1,2,3};
-						glEnableClientState(GL_VERTEX_ARRAY);
-						glEnableClientState(GL_NORMAL_ARRAY);
-						glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-						glVertexPointer(3, GL_FLOAT, 0, vertices);
-						glNormalPointer(GL_FLOAT,0,normals);
-						glTexCoordPointer(2,GL_FLOAT,0,texture_uv);
-						glDrawElements(GL_TRIANGLES, 6,GL_UNSIGNED_INT, indices);
-						glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-						glDisableClientState(GL_NORMAL_ARRAY);
-						glDisableClientState(GL_VERTEX_ARRAY);
-					}
-					
-				}			
+				GLfloat texture_uv[8]={//v0[u,v] v1[u,v], v2[u,v] v3[u,v]
+					((float)lgt)/divisions, (curr_low[1]+offsetY)/rangeY ,((float)lgt)/divisions, 
+					(curr[1]+offsetY)/rangeY,
+					((float)lgtNext)/divisions,  (curr_low[1]+offsetY)/rangeY,((float)lgtNext)/divisions, 
+					(curr[1]+offsetY)/rangeY};
+				GLuint indices[6]={1,0,2,1,2,3};
+				glEnableClientState(GL_VERTEX_ARRAY);
+				glEnableClientState(GL_NORMAL_ARRAY);
+				glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+				glVertexPointer(3, GL_FLOAT, 0, vertices);
+				glNormalPointer(GL_FLOAT,0,normals);
+				glTexCoordPointer(2,GL_FLOAT,0,texture_uv);
+				glDrawElements(GL_TRIANGLES, 6,GL_UNSIGNED_INT, indices);
+				glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+				glDisableClientState(GL_NORMAL_ARRAY);
+				glDisableClientState(GL_VERTEX_ARRAY);
 			}
 		}
 	}
