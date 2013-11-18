@@ -533,8 +533,9 @@ void drawRevolution(double scale)
 		float origin_y = 1.13132490911795f;
 		float origin_z = -3.0f;
 		int num_pts = revolution_pts.size();
-		float maxY = 0.0;
-		float minY= 0.0;
+		float maxY = -100000000000000000;
+		float minY= 1000000000000000;
+		
 		for(int rp=0; rp <revolution_pts.size(); rp++){
 			if(revolution_pts[rp].y<=minY)
 				minY=revolution_pts[rp].y;
@@ -542,8 +543,7 @@ void drawRevolution(double scale)
 				maxY=revolution_pts[rp].y;
 		}
 		float rangeY=maxY-minY;
-		float offsetY= (minY<0?-minY:minY);
-		for ( int j = 1; j < num_pts; ++ j ) {
+		for ( int j = 1; j < num_pts;  j ++) {
 			// for each point, make corresponding sets of points
 			for (int lgt = 0; lgt < divisions;lgt++){
 				float theta = 2*PI*lgt/divisions;
@@ -551,7 +551,7 @@ void drawRevolution(double scale)
 					(revolution_pts[j].x * sin(theta))+origin_z);
 				Vec3d curr_low =  Vec3d(revolution_pts[j-1].x * cos(theta),revolution_pts[j-1].y+origin_y,
 					(revolution_pts[j-1].x * sin(theta))+origin_z);
-				int lgtNext = (lgt==divisions-1?0:lgt+1);
+				int lgtNext = (lgt==divisions?0:lgt+1);
 				float thetaNext= 2*PI*lgtNext/divisions;
 				Vec3d curr_nxt= Vec3d(revolution_pts[j].x * cos(thetaNext), revolution_pts[j].y+origin_y,
 					(revolution_pts[j].x * sin(thetaNext))+origin_z);
@@ -577,11 +577,16 @@ void drawRevolution(double scale)
 					curr_low_nxt[0],curr_low_nxt[1],curr_low_nxt[2],
 					curr_nxt[0],curr_nxt[1],curr_nxt[2]};
 
-				GLfloat texture_uv[8]={//v0[u,v] v1[u,v], v2[u,v] v3[u,v]
-					((float)lgt)/divisions, (curr_low[1]+offsetY)/rangeY ,((float)lgt)/divisions, 
-					(curr[1]+offsetY)/rangeY,
-					((float)lgtNext)/divisions,  (curr_low[1]+offsetY)/rangeY,((float)lgtNext)/divisions, 
-					(curr[1]+offsetY)/rangeY};
+				GLfloat texture_uv[8]={
+					((float)lgt)/divisions, (float(j-1))/num_pts,
+					((float)lgt)/divisions,  (float(j))/num_pts,
+					((float)lgtNext)/divisions,  (float(j-1))/num_pts,
+					((float)lgtNext)/divisions,  (float(j))/num_pts};
+				//v0[u,v] v1[u,v], v2[u,v] v3[u,v]
+				//	((float)lgt)/divisions,  (curr_low[1]-minY-origin_y)/rangeY ,
+				//	((float)lgt)/divisions, (curr[1]-minY-origin_y)/rangeY,
+				//	((float)lgtNext)/divisions, (curr_low[1]-minY-origin_y)/rangeY,
+				//	((float)lgtNext)/divisions,  (curr[1]-minY-origin_y)/rangeY};
 				GLuint indices[6]={1,0,2,1,2,3};
 				glEnableClientState(GL_VERTEX_ARRAY);
 				glEnableClientState(GL_NORMAL_ARRAY);

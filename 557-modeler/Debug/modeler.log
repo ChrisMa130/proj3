@@ -1,21 +1,19 @@
-﻿Build started 11/17/2013 4:41:36 AM.
+﻿Build started 11/17/2013 6:09:52 PM.
      1>Project "C:\Users\Eunsol\Dropbox\cs557\project3\557-modeler\modeler.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
          C:\Program Files\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /I"C:\Users\Eunsol\Dropbox\cs557\project3\557-modeler\\glew\include" /I"C:\Program Files\fltk-1.1.10\zlib" /I"C:\Program Files\fltk-1.1.10\png" /I"C:\Program Files\fltk-1.1.10\jpeg" /I"C:\Program Files\fltk-1.1.10" /I"C:\Users\Eunsol\Dropbox\cs557\project3\557-modeler\\file dialog" /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D FLTK1 /D GLEW_STATIC /D _VC80_UPGRADE=0x0710 /D _MBCS /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug/" /Fd"Debug/vc110.pdb" /Gd /TP /wd4996 /analyze- /errorReport:prompt modelerdraw.cpp
          modelerdraw.cpp
-     1>c:\users\eunsol\dropbox\cs557\project3\557-modeler\modelerdraw.cpp(633): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\users\eunsol\dropbox\cs557\project3\557-modeler\modelerdraw.cpp(666): warning C4244: 'initializing' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>c:\users\eunsol\dropbox\cs557\project3\557-modeler\modelerdraw.cpp(667): warning C4244: 'initializing' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>c:\users\eunsol\dropbox\cs557\project3\557-modeler\modelerdraw.cpp(668): warning C4244: 'initializing' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>c:\users\eunsol\dropbox\cs557\project3\557-modeler\modelerdraw.cpp(669): warning C4244: 'initializing' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>c:\users\eunsol\dropbox\cs557\project3\557-modeler\modelerdraw.cpp(672): warning C4244: 'initializing' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>c:\users\eunsol\dropbox\cs557\project3\557-modeler\modelerdraw.cpp(673): warning C4244: 'initializing' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>c:\users\eunsol\dropbox\cs557\project3\557-modeler\modelerdraw.cpp(674): warning C4244: 'initializing' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>c:\users\eunsol\dropbox\cs557\project3\557-modeler\modelerdraw.cpp(675): warning C4244: 'initializing' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>c:\users\eunsol\dropbox\cs557\project3\557-modeler\modelerdraw.cpp(678): warning C4244: 'initializing' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>c:\users\eunsol\dropbox\cs557\project3\557-modeler\modelerdraw.cpp(679): warning C4244: 'initializing' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>c:\users\eunsol\dropbox\cs557\project3\557-modeler\modelerdraw.cpp(680): warning C4244: 'initializing' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>c:\users\eunsol\dropbox\cs557\project3\557-modeler\modelerdraw.cpp(681): warning C4244: 'initializing' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>c:\users\eunsol\dropbox\cs557\project3\557-modeler\modelerdraw.cpp(536): warning C4305: 'initializing' : truncation from '__int64' to 'float'
+     1>c:\users\eunsol\dropbox\cs557\project3\557-modeler\modelerdraw.cpp(537): warning C4305: 'initializing' : truncation from '__int64' to 'float'
+     1>c:\users\eunsol\dropbox\cs557\project3\557-modeler\modelerdraw.cpp(539): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\eunsol\dropbox\cs557\project3\557-modeler\modelerdraw.cpp(570): warning C4244: 'initializing' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>c:\users\eunsol\dropbox\cs557\project3\557-modeler\modelerdraw.cpp(571): warning C4244: 'initializing' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>c:\users\eunsol\dropbox\cs557\project3\557-modeler\modelerdraw.cpp(572): warning C4244: 'initializing' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>c:\users\eunsol\dropbox\cs557\project3\557-modeler\modelerdraw.cpp(573): warning C4244: 'initializing' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>c:\users\eunsol\dropbox\cs557\project3\557-modeler\modelerdraw.cpp(576): warning C4244: 'initializing' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>c:\users\eunsol\dropbox\cs557\project3\557-modeler\modelerdraw.cpp(577): warning C4244: 'initializing' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>c:\users\eunsol\dropbox\cs557\project3\557-modeler\modelerdraw.cpp(578): warning C4244: 'initializing' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>c:\users\eunsol\dropbox\cs557\project3\557-modeler\modelerdraw.cpp(579): warning C4244: 'initializing' : conversion from 'double' to 'GLfloat', possible loss of data
        Link:
          C:\Program Files\Microsoft Visual Studio 11.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"Debug/modeler.exe" /INCREMENTAL /NOLOGO /LIBPATH:"C:\Program Files\fltk-1.1.10\lib" fltkzd.lib fltkjpegd.lib fltkpngd.lib fltkgld.lib fltkd.lib opengl32.lib comctl32.lib wsock32.lib glu32.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /NODEFAULTLIB:msvcrt /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"Debug/modeler.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE:NO /IMPLIB:"Debug\modeler.lib" /MACHINE:X86 /SAFESEH /MACHINE:I386 Debug/Fl_Tree.obj
          Debug/Fl_Tree_Item.obj
@@ -41,4 +39,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:01.92
+Time Elapsed 00:00:02.57
