@@ -116,9 +116,11 @@ class Worm : public Model {
 protected:
 //Add the property here:
   RangeProperty lengthProp;
+  RangeProperty neckAngleProp;
   RangeProperty headAngleProp;
   RangeProperty tailAngleProp;
   RangeProperty antennaAngleProp;
+  RangeProperty eyeAngleProp;
   RangeProperty headScaleProp;
   RangeProperty tailScaleProp;
   RangeProperty bodyAngleProp;
