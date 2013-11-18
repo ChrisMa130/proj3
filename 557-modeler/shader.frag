@@ -42,12 +42,12 @@ void main()
 	ambient += gl_FrontLightProduct[0].ambient;
 
 	// add factors from pointlight..
-	vec3 PLight = normalize(gl_LightSource[1].position.xyz);
+	vec3 PLight = normalize(gl_LightSource[1].position.xyz-v);
 	vec3 PHalf = normalize(Viewer+PLight);
 	
-	vec3 lightDir = vec3(gl_LightSource[1].position.xyz-v);
+	vec3 lightDir = gl_LightSource[1].position.xyz - v;
     float distance = length(lightDir);
-
+	
 	float PB=1.0;
 	if(dot(Normal,normalize(lightDir))<0.0) PB=0.0;
 	
@@ -63,7 +63,7 @@ void main()
 		float PspecularShade = PB * pow( max ( dot(PHalf,Normal),0.0), gl_FrontMaterial.shininess);
 		diffuse += atten * PdiffuseShade * gl_FrontLightProduct[1].diffuse;
 		specular += atten * PspecularShade * gl_FrontLightProduct[1].specular;
-		ambient += atten * PB*gl_FrontLightProduct[1].ambient;
+		ambient += atten * gl_FrontLightProduct[1].ambient;
 	}
 	// Assign final color
 	gl_FragColor = ambient + diffuse + specular + gl_FrontMaterial.emission;
