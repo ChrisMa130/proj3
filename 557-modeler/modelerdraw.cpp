@@ -501,6 +501,9 @@ int write_revolution_rayfile(FILE* rayfile, int num_vertices, int num_triangles,
 	return 0;
 }
 
+void drawMyObject(double scale){
+}
+
 void drawRevolution(double scale)
 {
 
@@ -530,16 +533,16 @@ void drawRevolution(double scale)
 		float origin_y = 1.13132490911795f;
 		float origin_z = -3.0f;
 		int num_pts = revolution_pts.size();
-		float maxY = -100000000000000000;
-		float minY= 1000000000000000;
-		
-		for(int rp=0; rp <revolution_pts.size(); rp++){
-			if(revolution_pts[rp].y<=minY)
-				minY=revolution_pts[rp].y;
-			if(revolution_pts[rp].y>=maxY)
-				maxY=revolution_pts[rp].y;
+		float totalLength=0.0;
+		std::vector<float> length;
+		length.clear();
+		for(int rp=0; rp < revolution_pts.size()-1 ; rp++){
+			float l = sqrt(pow(revolution_pts[rp].x-revolution_pts[rp+1].x,2)+
+				pow(revolution_pts[rp].y-revolution_pts[rp+1].y,2));
+			totalLength+=l;
+			length.push_back(totalLength);			
 		}
-		float rangeY=maxY-minY;
+		
 		for ( int j = 1; j < num_pts;  j ++) {
 			// for each point, make corresponding sets of points
 			for (int lgt = 0; lgt < divisions;lgt++){
@@ -555,10 +558,10 @@ void drawRevolution(double scale)
 				Vec3d curr_low_nxt = Vec3d( revolution_pts[j-1].x * cos(thetaNext),
 					revolution_pts[j-1].y+origin_y, (revolution_pts[j-1].x * sin(thetaNext))+origin_z);
 				//compute normals
-				Vec3d curr_low_n = (cp(curr-curr_low,Vec3d(-1*sin(theta),0,cos(theta))));
-				Vec3d curr_n = (cp(curr-curr_low,Vec3d(-1*sin(theta),0,cos(theta))));
-				Vec3d curr_nxt_n = (cp(curr_nxt-curr_low_nxt,Vec3d(-1*sin(thetaNext),0,cos(thetaNext))));
-				Vec3d curr_low_nxt_n = (cp(curr_nxt-curr_low_nxt,Vec3d(-1*sin(thetaNext),0,cos(thetaNext))));
+				Vec3d curr_low_n =(cp(Vec3d(-1*sin(theta),0,cos(theta)),curr-curr_low));
+				Vec3d curr_n = (cp(Vec3d(-1*sin(theta),0,cos(theta)),curr-curr_low));
+				Vec3d curr_nxt_n = (cp(Vec3d(-1*sin(thetaNext),0,cos(thetaNext)),curr_nxt-curr_low_nxt));
+				Vec3d curr_low_nxt_n = (cp(Vec3d(-1*sin(thetaNext),0,cos(thetaNext)),curr_nxt-curr_low_nxt));
 				curr_n.normalize();
 				curr_low_n.normalize();
 				curr_nxt_n.normalize();
@@ -569,21 +572,18 @@ void drawRevolution(double scale)
 					curr_nxt[0],curr_nxt[1],curr_nxt[2]};
 
 				GLfloat normals[12] = {
-					curr_low[0], curr_low[1], curr_low[2],
-					curr[0],curr[1],curr[2],
-					curr_low_nxt[0],curr_low_nxt[1],curr_low_nxt[2],
-					curr_nxt[0],curr_nxt[1],curr_nxt[2]};
+					curr_low_n[0], curr_low_n[1], curr_low_n[2],
+					curr_n[0],curr_n[1],curr_n[2],
+					curr_low_nxt_n[0],curr_low_nxt_n[1],curr_low_nxt_n[2],
+					curr_nxt_n[0],curr_nxt_n[1],curr_nxt_n[2]};
+
 
 				GLfloat texture_uv[8]={
-					((float)lgt)/divisions, (float(j-1))/num_pts,
-					((float)lgt)/divisions,  (float(j))/num_pts,
-					((float)lgtNext)/divisions,  (float(j-1))/num_pts,
-					((float)lgtNext)/divisions,  (float(j))/num_pts};
-				//v0[u,v] v1[u,v], v2[u,v] v3[u,v]
-				//	((float)lgt)/divisions,  (curr_low[1]-minY-origin_y)/rangeY ,
-				//	((float)lgt)/divisions, (curr[1]-minY-origin_y)/rangeY,
-				//	((float)lgtNext)/divisions, (curr_low[1]-minY-origin_y)/rangeY,
-				//	((float)lgtNext)/divisions,  (curr[1]-minY-origin_y)/rangeY};
+					((float)lgt)/divisions, (j==1?0:length[j-2])/totalLength,
+					((float)lgt)/divisions,  (length[j-1])/totalLength,
+					((float)lgtNext)/divisions,  (j==1?0:length[j-2])/totalLength,
+					((float)lgtNext)/divisions,  (length[j-1])/totalLength};
+				
 				GLuint indices[6]={1,0,2,1,2,3};
 				glEnableClientState(GL_VERTEX_ARRAY);
 				glEnableClientState(GL_NORMAL_ARRAY);
